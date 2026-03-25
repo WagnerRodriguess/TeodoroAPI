@@ -1,8 +1,12 @@
 from rest_framework import serializers
 
-from .models import MedicalSupplyLabel
+from apps.medical_supply_label.models import MedicalSupplyLabel
 
-from .validators import validate_category, validate_not_blank, validate_supply_type
+from apps.medical_supply_label.validators import (
+    validate_category,
+    validate_not_blank,
+    validate_supply_type,
+)
 
 
 class MedicalSupplyLabelSerializer(serializers.ModelSerializer):

@@ -4,8 +4,8 @@ from rest_framework import status
 
 from django.http import Http404
 
-from .serializers import MedicalSupplyLabelSerializer
-from .services import MedicalSupplyLabelServices
+from apps.medical_supply_label.serializers import MedicalSupplyLabelSerializer
+from apps.medical_supply_label.services import MedicalSupplyLabelServices
 
 
 class MedicalSupplyLabelListAPIView(APIView):

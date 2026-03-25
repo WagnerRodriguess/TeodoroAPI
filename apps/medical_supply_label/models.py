@@ -1,27 +1,18 @@
 from django.db import models
 from django.utils.translation import gettext_lazy as _
 
-from .validators import validate_category, validate_not_blank, validate_supply_type
+from apps.medical_supply_label.validators import (
+    validate_category,
+    validate_not_blank,
+    validate_supply_type,
+)
+
+from apps.medical_supply_label.choices import (
+    MEDICAL_SUPPLY_TYPES,
+    MEDICAL_SUPPLY_CATEGORIES,
+)
 
 # Create your models here.
-
-MEDICAL_SUPPLY_TYPES = [
-    ("medication", _("Medication")),
-    ("equipment", _("Equipment")),
-    ("sterilization", _("Sterilization")),
-    ("nutrition", _("Nutrition")),
-    ("blood_product", _("Blood Product")),
-    ("other", _("Other")),
-]
-
-MEDICAL_SUPPLY_CATEGORIES = [
-    ("disposable", _("Disposable")),
-    ("reusable", _("Reusable")),
-    ("implantable", _("Implantable")),
-    ("diagnostic", _("Diagnostic")),
-    ("therapeutic", _("Therapeutic")),
-    ("other", _("Other")),
-]
 
 
 class MedicalSupplyLabel(models.Model):

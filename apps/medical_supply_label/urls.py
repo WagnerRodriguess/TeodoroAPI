@@ -1,6 +1,9 @@
 from django.urls import path
 
-from .views import MedicalSupplyLabelListAPIView, MedicalSupplyLabelDetailAPIView
+from apps.medical_supply_label.views import (
+    MedicalSupplyLabelListAPIView,
+    MedicalSupplyLabelDetailAPIView,
+)
 
 app_name = "medical_supply_label"
 
