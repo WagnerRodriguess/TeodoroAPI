@@ -1,21 +1,17 @@
 from django.db import models
+from apps.core.models import TimeStampedModel
 from django.utils.translation import gettext_lazy as _
-
 from apps.medical_supply_label.validators import (
     validate_category,
     validate_not_blank,
     validate_supply_type,
 )
-
 from apps.medical_supply_label.choices import (
     MEDICAL_SUPPLY_TYPES,
     MEDICAL_SUPPLY_CATEGORIES,
 )
 
-# Create your models here.
-
-
-class MedicalSupplyLabel(models.Model):
+class MedicalSupplyLabel(TimeStampedModel):
     name = models.CharField(
         max_length=200, verbose_name=_("name"), validators=[validate_not_blank]
     )
