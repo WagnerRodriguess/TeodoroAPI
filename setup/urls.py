@@ -16,6 +16,7 @@ api_patterns = [
     path("authentication/", include("apps.authentication.urls")),
     path("supply-labels/", include("apps.supply_label.urls")),
     path("accounts/", include("apps.account.urls")),
+    path("organizations/", include("apps.organization.urls")),
 ]
 
 urlpatterns = [
