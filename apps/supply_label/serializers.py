@@ -12,7 +12,7 @@ class SupplyLabelSerializer(serializers.ModelSerializer):
 
     id = serializers.IntegerField(read_only=True)
 
-    def validate_supply_label_type(self, value):
+    def validate_supply_type(self, value):
         validate_supply_type(value)
         return value
 

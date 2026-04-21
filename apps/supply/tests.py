@@ -6,8 +6,10 @@ from rest_framework.test import APITestCase
 from rest_framework_simplejwt.tokens import RefreshToken
 
 from apps.supply.models import Supply, SupplyLabel
-from apps.supply.choices import SupplyStatus, SupplyLabelType
-from apps.supply.validators import validate_quantity, validate_supply_status, validate_supply_label_type
+from apps.supply.choices import SupplyStatus
+from apps.supply.validators import validate_unit_of_measure, validate_supply_status
+from apps.supply_label.choices import SupplyLabelType
+from apps.supply_label.validators import validate_supply_type
 from apps.supply.services import SupplyLabelServices, SupplyServices
 from apps.account.models import Account
 from apps.account.choices import AccountType
@@ -68,14 +70,14 @@ def make_supply(label=None, **kwargs):
 
 class ValidatorTests(TestCase):
 
-    def test_validate_quantity_valid(self):
+    def test_validate_unit_of_measure_valid(self):
         # should not raise
-        validate_quantity(0)
-        validate_quantity(50.5)
+        validate_unit_of_measure(0)
+        validate_unit_of_measure(50.5)
 
-    def test_validate_quantity_negative_raises(self):
+    def test_validate_unit_of_measure_negative_raises(self):
         with self.assertRaises(ValidationError):
-            validate_quantity(-1)
+            validate_unit_of_measure(-1)
 
     def test_validate_supply_status_valid(self):
         for s in SupplyStatus.values:
@@ -85,13 +87,13 @@ class ValidatorTests(TestCase):
         with self.assertRaises(ValidationError):
             validate_supply_status("invalid_status")
 
-    def test_validate_supply_label_type_valid(self):
+    def test_validate_supply_type_valid(self):
         for t in SupplyLabelType.values:
-            validate_supply_label_type(t)  # should not raise
+            validate_supply_type(t)  # should not raise
 
-    def test_validate_supply_label_type_invalid_raises(self):
+    def test_validate_supply_type_invalid_raises(self):
         with self.assertRaises(ValidationError):
-            validate_supply_label_type("invalid_type")
+            validate_supply_type("invalid_type")
 
 
 # ── Model tests ───────────────────────────────────────────────────────────────
