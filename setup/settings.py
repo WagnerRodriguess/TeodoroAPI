@@ -49,6 +49,7 @@ INSTALLED_APPS = [
     "apps.supply_lot",
     "apps.core",
     "apps.request",
+    "apps.stock_movement",
 ]
 
 MIDDLEWARE = [
@@ -147,4 +148,3 @@ REST_FRAMEWORK = {
         "rest_framework.permissions.IsAuthenticated",
     ],
 }
-
