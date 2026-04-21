@@ -1,44 +1,17 @@
-from django.http import Http404
-from rest_framework import status, serializers
+from rest_framework import status
 from rest_framework.views import APIView
 from rest_framework.response import Response
 from rest_framework.permissions import IsAuthenticated
 from drf_spectacular.utils import (
     extend_schema,
     extend_schema_view,
-    inline_serializer,
     OpenApiResponse,
 )
 
 from apps.supply.services import SupplyServices
 from apps.supply.serializers import SupplySerializer
-from apps.supply_label.serializers import SupplyLabelSerializer
 from apps.account.permissions import IsNotCustomer
 
-# ── Envelope helpers ──────────────────────────────────────────────────────────
-
-SupplyLabelEnvelopeSerializer = inline_serializer(
-    name="SupplyLabelEnvelope",
-    fields={"data": SupplyLabelSerializer()},
-)
-SupplyLabelListEnvelopeSerializer = inline_serializer(
-    name="SupplyLabelListEnvelope",
-    fields={"data": SupplyLabelSerializer(many=True)},
-)
-
-SupplyEnvelopeSerializer = inline_serializer(
-    name="SupplyEnvelope",
-    fields={"data": SupplySerializer()},
-)
-SupplyListEnvelopeSerializer = inline_serializer(
-    name="SupplyListEnvelope",
-    fields={"data": SupplySerializer(many=True)},
-)
-
-ErrorResponseSerializer = inline_serializer(
-    name="SupplyErrorResponse",
-    fields={"error": serializers.CharField()},
-)
 
 # ── Supply views ──────────────────────────────────────────────────────────────
 
@@ -49,7 +22,6 @@ ErrorResponseSerializer = inline_serializer(
         summary="List supplies",
         description="Returns all supplies registered in the system.",
         responses={
-            200: SupplyListEnvelopeSerializer,
             401: OpenApiResponse(description="Authentication credentials were not provided."),
         },
     ),
@@ -59,7 +31,6 @@ ErrorResponseSerializer = inline_serializer(
         description="Creates a new supply entry. Restricted to non-customer users.",
         request=SupplySerializer,
         responses={
-            201: SupplyEnvelopeSerializer,
             400: OpenApiResponse(description="Validation error."),
             401: OpenApiResponse(description="Authentication credentials were not provided."),
             403: OpenApiResponse(description="Customers cannot access this resource."),
@@ -93,9 +64,8 @@ class SupplyListAPIView(APIView):
         operation_id="supplies_retrieve",
         summary="Retrieve supply",
         responses={
-            200: SupplyEnvelopeSerializer,
             401: OpenApiResponse(description="Authentication credentials were not provided."),
-            404: OpenApiResponse(response=ErrorResponseSerializer, description="Supply not found."),
+            404: OpenApiResponse(description="Supply not found."),
         },
     ),
     patch=extend_schema(
@@ -103,11 +73,10 @@ class SupplyListAPIView(APIView):
         summary="Partially update supply",
         request=SupplySerializer,
         responses={
-            200: SupplyEnvelopeSerializer,
             400: OpenApiResponse(description="Validation error."),
             401: OpenApiResponse(description="Authentication credentials were not provided."),
             403: OpenApiResponse(description="Customers cannot access this resource."),
-            404: OpenApiResponse(response=ErrorResponseSerializer, description="Supply not found."),
+            404: OpenApiResponse(description="Supply not found."),
         },
     ),
     delete=extend_schema(
@@ -117,7 +86,7 @@ class SupplyListAPIView(APIView):
             204: OpenApiResponse(description="Supply deleted."),
             401: OpenApiResponse(description="Authentication credentials were not provided."),
             403: OpenApiResponse(description="Customers cannot access this resource."),
-            404: OpenApiResponse(response=ErrorResponseSerializer, description="Supply not found."),
+            404: OpenApiResponse(description="Supply not found."),
         },
     ),
 )
@@ -130,18 +99,14 @@ class SupplyDetailAPIView(APIView):
         return [IsAuthenticated()]
 
     def get(self, request, pk):
-        try:
-            supply = SupplyServices.get(pk)
-        except Http404:
-            return Response({"error": "Supply not found"}, status=status.HTTP_404_NOT_FOUND)
+        
+        supply = SupplyServices.get(pk)
         serializer = SupplySerializer(supply)
         return Response({"data": serializer.data}, status=status.HTTP_200_OK)
 
     def patch(self, request, pk):
-        try:
-            supply = SupplyServices.get(pk)
-        except Http404:
-            return Response({"error": "Supply not found"}, status=status.HTTP_404_NOT_FOUND)
+       
+        supply = SupplyServices.get(pk)
         serializer = SupplySerializer(supply, data=request.data, partial=True)
         serializer.is_valid(raise_exception=True)
         updated = SupplyServices.update(supply, serializer.validated_data)
@@ -149,8 +114,6 @@ class SupplyDetailAPIView(APIView):
         return Response({"data": response.data}, status=status.HTTP_200_OK)
 
     def delete(self, request, pk):
-        try:
-            SupplyServices.delete(pk)
-        except Http404:
-            return Response({"error": "Supply not found"}, status=status.HTTP_404_NOT_FOUND)
+       
+        SupplyServices.delete(pk) 
         return Response(status=status.HTTP_204_NO_CONTENT)

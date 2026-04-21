@@ -5,8 +5,6 @@ from apps.supply.views import (
     SupplyDetailAPIView,
 )
 
-app_name = "supply"
-
 urlpatterns = [
     # Supplies
     path("", SupplyListAPIView.as_view(), name="supply_list"),
